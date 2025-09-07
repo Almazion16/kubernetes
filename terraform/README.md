@@ -1,4 +1,4 @@
-#Terraform
+# Infrastructure Terraform
 
 Terraform конфигурация для развертывания инфраструктуры в Yandex Cloud.
 

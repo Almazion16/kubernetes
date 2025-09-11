@@ -1,0 +1,9 @@
+- name: Deploy sausage-store application
+  hosts: all
+  become: yes
+  remote_user: ansible
+  vars_files:
+    - secret.yaml
+  roles:
+    - backend
+    - frontend

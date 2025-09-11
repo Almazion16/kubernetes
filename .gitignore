@@ -28,3 +28,6 @@ terraform.rc
 
 # Lock file
 .terraform.lock.hcl
+
+#.vault
+/ansible/.vault

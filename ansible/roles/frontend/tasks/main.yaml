@@ -1,0 +1,89 @@
+- name: install curl
+  apt:
+    name: curl
+    state: present
+    update_cache: yes
+
+- name: download nodesource script
+  get_url:
+    url: https://deb.nodesource.com/setup_22.x
+    dest: /tmp/nodesource_setup.sh
+    mode: '0755'
+    
+- name: run nodesource script
+  command: bash /tmp/nodesource_setup.sh
+  args:
+    creates: /etc/apt/sources.list.d/nodesource.list
+    
+- name: install Node.js
+  apt:
+    name: nodejs
+    state: present
+    update_cache: yes
+
+- name: frontend service user
+  user:
+    name: "{{ frontend_service_user }}"
+    system: yes
+    create_home: no
+    shell: /sbin/nologin
+  become: yes    
+
+- name: frontend directory
+  file:
+    path: "{{ frontend_directory }}"
+    state: directory
+    owner: "{{ frontend_service_user }}"
+    group: "{{ frontend_service_user }}"
+    mode: '0755'
+  become: yes  
+
+- name: download front artifacts
+  ansible.builtin.get_url:
+    url: "{{ nexus_url }}/repository/{{ nexus_frontend_repo }}/{{ frontend_version }}/sausage-store-{{ frontend_version }}.tar.gz"
+    dest: "{{ frontend_directory }}/sausage-store-frontend.tar.gz"
+    url_username: "{{ nexus_user }}"
+    url_password: "{{ nexus_pass }}"
+    mode: '0644'
+
+- name: untar frontend artifacts
+  unarchive:
+    src: "{{ frontend_directory }}/sausage-store-frontend.tar.gz"
+    dest: "{{ frontend_directory }}"
+    owner: "{{ frontend_service_user }}"
+    group: "{{ frontend_service_user }}"
+    remote_src: yes
+  become: yes
+
+- name: install http-server 
+  npm:
+    name: http-server
+    global: yes
+    state: present
+  become: yes
+
+- name: node binary
+  command: which node
+  register: node_path
+
+- name: bind ports <1024
+  become: yes
+  command: setcap 'cap_net_bind_service=+ep' "{{ node_path.stdout }}"
+
+- name: set front service unit
+  template:
+    src: sausage-frontend.service.j2
+    dest: /etc/systemd/system/sausage-frontend.service
+  become: yes
+
+- name: daemon reload
+  systemd:
+    daemon_reload: yes
+  become: yes
+
+- name: start frontend
+  systemd:
+    name: sausage-frontend
+    state: started
+    enabled: yes
+  become: yes    

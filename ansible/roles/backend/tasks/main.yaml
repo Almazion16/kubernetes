@@ -1,0 +1,56 @@
+#openjdk
+- name: OpenJDK 16
+  apt:
+    name: openjdk-16-jdk
+    state: present
+  become: yes
+
+#создание сервиски
+- name: backend service user
+  user:
+    name: "{{ backend_service_user }}"
+    create_home: no
+    shell: /sbin/nologin
+  become: yes
+
+#создание директорий бэка
+- name: backend directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ backend_service_user }}"
+    group: "{{ backend_service_user }}"
+    mode: '0755'
+  with_items:
+    - "{{ backend_lib_directory }}"
+    - "{{ backend_report_directory }}"
+  become: yes
+  
+ #стягивание артефактов
+- name: Download artifacts
+  ansible.builtin.get_url:
+    url: "{{ nexus_url }}/repository/{{ nexus_backend_repo }}/com/yandex/practicum/devops/sausage-store/{{ backend_version }}/sausage-store-{{ backend_version }}.jar"
+    dest: "{{ backend_lib_directory }}/sausage-store-{{ backend_version }}.jar"
+    url_username: "{{ nexus_user }}"
+    url_password: "{{ nexus_pass }}"
+    mode: '0755'
+  become: yes
+  
+  #установка файла юнита
+- name: Systemd unit
+  template:
+    src: sausage-backend.service.j2
+    dest: /etc/systemd/system/sausage-backend.service
+  become: yes
+  
+  #Перезапуск демона и старт серивса
+- name: reload daemon
+  systemd:
+    daemon_reload: yes
+  become: yes
+
+- name: start backend
+  service:
+    name: sausage-backend
+    state: started
+  become: yes

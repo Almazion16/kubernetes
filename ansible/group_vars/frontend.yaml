@@ -1,0 +1,5 @@
+frontend_version: "1.0.2359318"
+frontend_service_user: "frontend"
+frontend_directory: "/opt/sausage-store/static"
+nexus_frontend_repo: std-042-36-frontend2
+

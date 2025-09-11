@@ -1,0 +1,5 @@
+backend_version: "1.0.2359318"
+backend_service_user: "backend"
+backend_lib_directory: "/opt/sausage-store/bin"
+backend_report_directory: "/opt/sausage-store/reports"
+nexus_backend_repo: std-042-36-backend

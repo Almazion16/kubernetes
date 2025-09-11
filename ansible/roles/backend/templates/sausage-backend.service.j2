@@ -1,0 +1,21 @@
+[Unit]
+Description=Sausage Store Backend Service
+After=network.target
+
+[Service]
+Type=simple
+User=backend
+WorkingDirectory=/opt/sausage-store/bin
+Environment="REPORT_PATH=/var/sausage-store/reports"
+Environment="LOG_PATH=/var/sausage-store/logs"
+ExecStart=/usr/bin/java -jar /opt/sausage-store/bin/sausage-store-1.0.2359318.jar
+Restart=always
+RestartSec=5
+
+# Логирование в systemd
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=sausage-backend
+
+[Install]
+WantedBy=multi-user.target

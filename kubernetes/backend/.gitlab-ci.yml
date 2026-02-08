@@ -1,3 +1,4 @@
+#ci бэка
 stages:
   - deploy
 

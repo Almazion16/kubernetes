@@ -2,8 +2,8 @@ name: Sync from GitLab
 
 on:
   schedule:
-    - cron: "*/30 * * * *"   # каждые 30 минут
-  workflow_dispatch:         # запуск вручную
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
 
 jobs:
   sync:

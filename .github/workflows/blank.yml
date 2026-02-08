@@ -3,7 +3,7 @@ name: Sync from GitLab
 on:
   schedule:
     - cron: "*/30 * * * *"   # каждые 30 минут
-  workflow_dispatch:         # можно запускать вручную
+  workflow_dispatch:         # запуск вручную
 
 jobs:
   sync:
@@ -16,7 +16,9 @@ jobs:
 
       - name: Add GitLab remote
         run: |
-          git remote add gitlab https://oauth2:${{ secrets.GITLAB_TOKEN }}@${{ secrets.GITLAB_REPO_URL#https:// }}
+          GITLAB_URL="${{ secrets.GITLAB_REPO_URL }}"
+          GITLAB_URL="${GITLAB_URL#https://}"
+          git remote add gitlab "https://oauth2:${{ secrets.GITLAB_TOKEN }}@${GITLAB_URL}"
           git fetch gitlab --prune
 
       - name: Push from GitLab to GitHub

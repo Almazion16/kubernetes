@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
+  name: backend-report
 spec:
   selector:
-    app: frontend
+    app: backend-report
   ports:
-    - port: 80
+    - port: 8080
       targetPort: 8080

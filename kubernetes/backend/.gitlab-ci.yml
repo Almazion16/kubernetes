@@ -1,0 +1,15 @@
+stages:
+  - deploy
+
+deploy-backend:
+  stage: deploy
+  image: bitnami/kubectl
+  script:
+    - echo "$kubeconfig" > ~/.kube/config
+    - envsubst < ./kubernetes/backend/secrets.yaml | kubectl apply -f -
+    - kubectl apply -f ./kubernetes/backend/deployment.yaml
+    - kubectl apply -f ./kubernetes/backend/service.yaml
+    - rm -rf ~/.kube/config
+  environment:
+    name: k8s
+    url: http://std-042-36.k8s.praktikum-services.tech

@@ -1,0 +1,25 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-report
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-report
+  template:
+    metadata:
+      labels:
+        app: backend-report
+    spec:
+      imagePullSecrets:
+        - name: gitlab-regcred
+      containers:
+        - name: backend-report
+          image: gitlab.praktikum-services.ru:5050/std-042-36/sausage-store/sausage-backend-report:latest
+          envFrom:
+            - secretRef:
+                name: backend-report-secrets
+          ports:
+            - containerPort: 8080

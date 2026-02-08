@@ -1,0 +1,16 @@
+stages:
+  - deploy
+
+deploy-frontend:
+  stage: deploy
+  image: bitnami/kubectl
+  script:
+    - echo "$kubeconfig" > ~/.kube/config
+    - kubectl apply -f ./kubernetes/frontend/configmap.yaml
+    - kubectl apply -f ./kubernetes/frontend/deployment.yaml
+    - kubectl apply -f ./kubernetes/frontend/service.yaml
+    - kubectl apply -f ./kubernetes/frontend/ingress.yaml
+    - rm -rf ~/.kube/config
+  environment:
+    name: k8s
+    url: http://std-042-36.k8s.praktikum-services.tech

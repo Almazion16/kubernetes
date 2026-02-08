@@ -16,7 +16,7 @@ spec:
         - name: gitlab-regcred
       containers:
         - name: frontend
-          image: gitlab.praktikum-services.ru:5050/std-042-36/sausage-store/sausage-frontend:latest
+          image: gitlab.praktikum-services.ru:5050/std-042-36/sausage-store/sausage-frontend:1.0.2640813
           ports:
             - containerPort: 8080
           volumeMounts:

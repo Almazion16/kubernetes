@@ -1,4 +1,4 @@
-#ci бэк реп
+#ci бэк ре
 stages:
   - deploy
 

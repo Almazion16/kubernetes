@@ -1,4 +1,4 @@
-#ci фронтенда
+#ci фронтенд
 stages:
   - deploy
 
